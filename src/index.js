@@ -38,14 +38,14 @@ window.addEventListener('load', function () {
       throw new Error('no video input');
     }
 
-    navigator.mediaDevices.getUserMedia({
+    return navigator.mediaDevices.getUserMedia({
       video: {
         sourceId: sourceId
       }
-    })
-    .then(handleStream)
-    .catch(function (err) {
-      console.error(err);
     });
+  })
+  .then(handleStream)
+  .catch(function (err) {
+    console.error(err);
   });
 });
