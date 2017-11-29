@@ -7,8 +7,7 @@ window.addEventListener('load', function () {
     video.srcObject = source;
   }
 
-  navigator.mediaDevices.enumerateDevices()
-  .then(function (devices) {
+  function handleDevices(devices) {
     var sourceId = null;
 
     console.log(devices);
@@ -43,7 +42,10 @@ window.addEventListener('load', function () {
         sourceId: sourceId
       }
     });
-  })
+  }
+
+  navigator.mediaDevices.enumerateDevices()
+  .then(handleDevices)
   .then(handleStream)
   .catch(function (err) {
     console.error(err);
