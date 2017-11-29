@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Live Color</title>
+</head>
+
+<body>
+  <script>
+    let handleStream = s => {
+      document.body.append(
+        Object.assign(document.createElement('video'), {
+          autoplay: true,
+          srcObject: s
+        })
+      );
+    }
+
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      let sourceId = null;
+      // enumerate all devices
+      for (var device of devices) {
+        // if there is still no video input, or if this is the rear camera
+        if (device.kind == 'videoinput' &&
+          (!sourceId || device.label.indexOf('back') !== -1)) {
+          sourceId = device.deviceId;
+        }
+      }
+
+      // we didn't find any video input
+      if (!sourceId) {
+        throw 'no video input';
+      }
+
+      let constraints = {
+        video: {
+          sourceId: sourceId
+        }
+      };
+      
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(handleStream)
+        .catch(err => {
+          alert('error: ' + err.message);
+        });
+    });
+  </script>
+</body>
+
+</html>
