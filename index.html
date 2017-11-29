@@ -8,42 +8,42 @@
 
 <body>
   <script>
-    let handleStream = s => {
+    function handleStream (source) {
       document.body.append(
         Object.assign(document.createElement('video'), {
           autoplay: true,
-          srcObject: s
+          srcObject: source
         })
       );
     }
 
-    navigator.mediaDevices.enumerateDevices().then(devices => {
-      let sourceId = null;
-      // enumerate all devices
-      for (var device of devices) {
+    navigator.mediaDevices.enumerateDevices()
+    .then(function (devices) {
+      var sourceId = null;
+      
+      // enumerate all devices all array-like
+      [].forEach.call(devices, function (device) {
         // if there is still no video input, or if this is the rear camera
         if (device.kind == 'videoinput' &&
           (!sourceId || device.label.indexOf('back') !== -1)) {
           sourceId = device.deviceId;
         }
-      }
-
+      });
+      
       // we didn't find any video input
       if (!sourceId) {
-        throw 'no video input';
+        throw new Error('no video input');
       }
 
-      let constraints = {
+      navigator.mediaDevices.getUserMedia({
         video: {
           sourceId: sourceId
         }
-      };
-      
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then(handleStream)
-        .catch(err => {
-          alert('error: ' + err.message);
-        });
+      })
+      .then(handleStream)
+      .catch(err => {
+        alert('error: ' + err.message);
+      });
     });
   </script>
 </body>
