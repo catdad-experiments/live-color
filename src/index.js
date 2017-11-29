@@ -44,9 +44,8 @@ window.addEventListener('load', function () {
       }
     })
     .then(handleStream)
-    .catch(err => {
-      // TODO remove alert
-      alert('error: ' + err.message);
+    .catch(function (err) {
+      console.error(err);
     });
   });
 });
