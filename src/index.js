@@ -2,10 +2,13 @@
 
 window.addEventListener('load', function () {
   var unsupportedPrompt = document.querySelector('#unsupported-prompt');
+  var errorPrompt = document.querySelector('#error-prompt');
   var video = document.querySelector('#video');
 
   function hidePromps() {
-    unsupportedPrompt.classList.add('hide');
+    [unsupportedPrompt, errorPrompt].forEach(function (prompt) {
+      prompt.classList.add('hide');
+    });
   }
 
   function onMissingFeatures(missing) {
@@ -19,6 +22,19 @@ window.addEventListener('load', function () {
     );
 
     unsupportedPrompt.appendChild(p);
+  }
+
+  function onError(err) {
+    hidePromps();
+
+    errorPrompt.classList.remove('hide');
+
+    var p = document.createElement('p');
+    p.appendChild(
+      document.createTextNode(err.message || err.toString())
+    );
+
+    errorPrompt.appendChild(p);
   }
 
   // detect missing features in the browser
@@ -78,7 +94,5 @@ window.addEventListener('load', function () {
   navigator.mediaDevices.enumerateDevices()
   .then(handleDevices)
   .then(handleStream)
-  .catch(function (err) {
-    console.error(err);
-  });
+  .catch(onError);
 });
