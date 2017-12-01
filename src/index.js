@@ -63,14 +63,17 @@ window.addEventListener('load', function () {
     canvas.width = cw;
     canvas.height = ch;
 
+    var vidX = (vw - cw) / 2;
+    var vidY = (vh - ch) / 2;
+
     var context = canvas.getContext('2d');
 
     (function paintFrame () {
-      context.drawImage(video, 0, 0, 200, 200, 0, 0, 200, 200);
+      context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
 
+      // keep painting recursively on each frame
       requestAnimationFrame(paintFrame);
     }());
-
   }
 
   function handleStream (source) {
