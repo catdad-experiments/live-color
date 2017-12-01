@@ -20,6 +20,11 @@ header {
   padding: 20px;
 }
 
+header.error {
+  background: #d64c4f;
+  font-weight: bold;
+}
+
 footer {
   flex-grow: 0;
   text-align: center;
