@@ -76,6 +76,12 @@ video {
   width: 100%;
 }
 
+canvas {
+  outline: 1px solid red;
+  width: 200px;
+  height: 200px;
+}
+
 span.icon {
   position: relative;
   display: inline-block;
