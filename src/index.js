@@ -1,37 +1,41 @@
 /* jshint browser: true */
 
 window.addEventListener('load', function () {
-  var unsupportedPrompt = document.querySelector('#unsupported-prompt');
-  var errorPrompt = document.querySelector('#error-prompt');
+  var header = document.querySelector('header');
+  var prompt = document.querySelector('#prompt');
   var video = document.querySelector('#video');
 
-  function showPrompt(prompt) {
-    [unsupportedPrompt, errorPrompt].forEach(function (p) {
-      if (p === prompt) {
-        p.classList.remove('hide');
-      } else {
-        p.classList.add('hide');
-      }
+  function showPrompt(message, type) {
+    if (typeof message === 'string') {
+      message = [message];
+    }
+
+    message.forEach(function (text) {
+      var paragraph = document.createElement('p');
+      paragraph.appendChild(document.createTextNode(text.toString()));
+
+      prompt.appendChild(paragraph);
     });
-  }
 
-  function textParagraph(text) {
-    var paragraph = document.createElement('p');
-    paragraph.appendChild(document.createTextNode(text.toString()));
+    prompt.classList.remove('hide');
 
-    return paragraph;
+    if (type === 'error') {
+      header.classList.add('error');
+    }
   }
 
   function onMissingFeatures(missing) {
-    showPrompt(unsupportedPrompt);
-
-    unsupportedPrompt.appendChild(textParagraph(missing));
+    showPrompt([
+      'It seems your browser is not supported. The following features are missing:',
+      missing
+    ], 'error');
   }
 
   function onError(err) {
-    showPrompt(errorPrompt);
-
-    errorPrompt.appendChild(textParagraph(err.message || err));
+    showPrompt([
+      'An error occured:',
+      err.message || err
+    ], 'error');
   }
 
   // detect missing features in the browser
