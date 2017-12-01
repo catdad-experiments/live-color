@@ -10,8 +10,6 @@ window.addEventListener('load', function () {
   function handleDevices(devices) {
     var sourceId = null;
 
-    console.log(devices);
-
     // enumerate all devices all array-like
     [].forEach.call(devices, function (device) {
       // we don't care about non-video
