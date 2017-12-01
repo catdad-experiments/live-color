@@ -1,7 +1,38 @@
 /* jshint browser: true */
 
 window.addEventListener('load', function () {
+  var unsupportedPrompt = document.querySelector('#unsupported-prompt');
   var video = document.querySelector('#video');
+
+  function hidePromps() {
+    unsupportedPrompt.classList.add('hide');
+  }
+
+  function onMissingFeatures(missing) {
+    hidePromps();
+
+    unsupportedPrompt.classList.remove('hide');
+
+    var p = document.createElement('p');
+    p.appendChild(
+      document.createTextNode(missing.toString())
+    );
+
+    unsupportedPrompt.appendChild(p);
+  }
+
+  // detect missing features in the browser
+  var missingFeatures = [
+    'navigator.mediaDevices'
+  ].filter(function (name) {
+    return !name.split('.').reduce(function (obj, path) {
+      return (obj || {})[path];
+    }, window);
+  });
+
+  if (missingFeatures.length) {
+    return onMissingFeatures(missingFeatures.join(', '));
+  }
 
   function handleStream (source) {
     video.srcObject = source;
