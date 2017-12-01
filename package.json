@@ -4,7 +4,8 @@
   "description": "live-color",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server . --ssl --key certs/localhost.key --cert certs/localhost.crt"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/catdad-experiments/live-color/issues"
   },
-  "homepage": "https://github.com/catdad-experiments/live-color#readme"
+  "homepage": "https://github.com/catdad-experiments/live-color#readme",
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  }
 }
