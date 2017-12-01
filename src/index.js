@@ -39,7 +39,9 @@ window.addEventListener('load', function () {
 
     return navigator.mediaDevices.getUserMedia({
       video: {
-        sourceId: sourceId
+        mandatory: {
+          sourceId: sourceId
+        }
       }
     });
   }
