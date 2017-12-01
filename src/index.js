@@ -2,23 +2,36 @@
 
 window.addEventListener('load', function () {
   var unsupportedPrompt = document.querySelector('#unsupported-prompt');
+  var errorPrompt = document.querySelector('#error-prompt');
   var video = document.querySelector('#video');
 
-  function hidePromps() {
-    unsupportedPrompt.classList.add('hide');
+  function showPrompt(prompt) {
+    [unsupportedPrompt, errorPrompt].forEach(function (p) {
+      if (p === prompt) {
+        p.classList.remove('hide');
+      } else {
+        p.classList.add('hide');
+      }
+    });
+  }
+
+  function textParagraph(text) {
+    var paragraph = document.createElement('p');
+    paragraph.appendChild(document.createTextNode(text.toString()));
+
+    return paragraph;
   }
 
   function onMissingFeatures(missing) {
-    hidePromps();
+    showPrompt(unsupportedPrompt);
 
-    unsupportedPrompt.classList.remove('hide');
+    unsupportedPrompt.appendChild(textParagraph(missing));
+  }
 
-    var p = document.createElement('p');
-    p.appendChild(
-      document.createTextNode(missing.toString())
-    );
+  function onError(err) {
+    showPrompt(errorPrompt);
 
-    unsupportedPrompt.appendChild(p);
+    errorPrompt.appendChild(textParagraph(err.message || err));
   }
 
   // detect missing features in the browser
@@ -78,7 +91,5 @@ window.addEventListener('load', function () {
   navigator.mediaDevices.enumerateDevices()
   .then(handleDevices)
   .then(handleStream)
-  .catch(function (err) {
-    console.error(err);
-  });
+  .catch(onError);
 });
