@@ -53,11 +53,15 @@ window.addEventListener('load', function () {
   }
 
   function continuousPaint (video, canvas) {
-    var width = video.videoWidth;
-    var height = video.videoHeight;
+    var vw = video.videoWidth;
+    var vh = video.videoHeight;
+    var cw = canvas.clientWidth;
+    var ch = canvas.clientHeight;
 
-    canvas.style.width = '200px';
-    canvas.style.height = '200px';
+    // set the actual width and height of the canvas,
+    // because apparently it's not inherited from the DOM
+    canvas.width = cw;
+    canvas.height = ch;
 
     var context = canvas.getContext('2d');
 
