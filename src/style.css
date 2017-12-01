@@ -73,6 +73,7 @@ b {
 }
 
 video {
+  display: none;
   width: 100%;
 }
 
