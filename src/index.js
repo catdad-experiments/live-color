@@ -5,36 +5,33 @@ window.addEventListener('load', function () {
   var errorPrompt = document.querySelector('#error-prompt');
   var video = document.querySelector('#video');
 
-  function hidePromps() {
-    [unsupportedPrompt, errorPrompt].forEach(function (prompt) {
-      prompt.classList.add('hide');
+  function showPrompt(prompt) {
+    [unsupportedPrompt, errorPrompt].forEach(function (p) {
+      if (p === prompt) {
+        p.classList.remove('hide');
+      } else {
+        p.classList.add('hide');
+      }
     });
   }
 
+  function textParagraph(text) {
+    var paragraph = document.createElement('p');
+    paragraph.appendChild(document.createTextNode(text.toString()));
+
+    return paragraph;
+  }
+
   function onMissingFeatures(missing) {
-    hidePromps();
+    showPrompt(unsupportedPrompt);
 
-    unsupportedPrompt.classList.remove('hide');
-
-    var p = document.createElement('p');
-    p.appendChild(
-      document.createTextNode(missing.toString())
-    );
-
-    unsupportedPrompt.appendChild(p);
+    unsupportedPrompt.appendChild(textParagraph(missing));
   }
 
   function onError(err) {
-    hidePromps();
+    showPrompt(errorPrompt);
 
-    errorPrompt.classList.remove('hide');
-
-    var p = document.createElement('p');
-    p.appendChild(
-      document.createTextNode(err.message || err.toString())
-    );
-
-    errorPrompt.appendChild(p);
+    errorPrompt.appendChild(textParagraph(err.message || err));
   }
 
   // detect missing features in the browser
