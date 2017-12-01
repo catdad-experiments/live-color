@@ -4,6 +4,7 @@ window.addEventListener('load', function () {
   var header = document.querySelector('header');
   var prompt = document.querySelector('#prompt');
   var video = document.querySelector('#video');
+  var canvas = document.querySelector('canvas');
 
   function showPrompt(message, type) {
     if (typeof message === 'string') {
@@ -51,8 +52,36 @@ window.addEventListener('load', function () {
     return onMissingFeatures(missingFeatures.join(', '));
   }
 
+  function continuousPaint (video, canvas) {
+    var vw = video.videoWidth;
+    var vh = video.videoHeight;
+    var cw = canvas.clientWidth;
+    var ch = canvas.clientHeight;
+
+    // set the actual width and height of the canvas,
+    // because apparently it's not inherited from the DOM
+    canvas.width = cw;
+    canvas.height = ch;
+
+    var vidX = (vw - cw) / 2;
+    var vidY = (vh - ch) / 2;
+
+    var context = canvas.getContext('2d');
+
+    (function paintFrame () {
+      context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
+
+      // keep painting recursively on each frame
+      requestAnimationFrame(paintFrame);
+    }());
+  }
+
   function handleStream (source) {
     video.srcObject = source;
+
+    video.addEventListener('playing', function () {
+      continuousPaint(video, canvas);
+    });
   }
 
   function handleDevices(devices) {
