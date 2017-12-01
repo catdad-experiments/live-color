@@ -73,7 +73,13 @@ b {
 }
 
 video {
+  display: none;
   width: 100%;
+}
+
+canvas {
+  width: 200px;
+  height: 200px;
 }
 
 span.icon {
