@@ -5,6 +5,7 @@ window.addEventListener('load', function () {
   var prompt = document.querySelector('#prompt');
   var video = document.querySelector('#video');
   var canvas = document.querySelector('canvas');
+  var color = document.querySelector('#color');
 
   function showPrompt(message, type) {
     if (typeof message === 'string') {
@@ -68,8 +69,41 @@ window.addEventListener('load', function () {
 
     var context = canvas.getContext('2d');
 
-    (function paintFrame () {
+    function drawContext() {
       context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
+    }
+
+    function captureColor() {
+      // get a 3x3 area of pixels from the center
+      var x = Math.floor(cw / 2);
+      var y = Math.floor(ch / 2);
+
+      var pixels = [].slice.call(context.getImageData(x - 1, y - 1, 3, 3).data);
+
+      var colors = [];
+
+      while (pixels.length) {
+        // pixels are an array of rgba values
+        colors.push(pixels.splice(0, 4));
+      }
+
+      var average = colors.reduce(function (a, b) {
+        return [
+          a[0] + b[0],
+          a[1] + b[1],
+          a[2] + b[2],
+          a[3] + b[3]
+        ];
+      }).map(function (c) {
+        return Math.floor(c / colors.length);
+      });
+
+      color.style.backgroundColor = 'rgb(' + average[0] + ',' + average[1] + ',' + average[2] + ')';
+    }
+
+    (function paintFrame () {
+      drawContext();
+      captureColor();
 
       // keep painting recursively on each frame
       requestAnimationFrame(paintFrame);
