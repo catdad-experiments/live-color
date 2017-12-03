@@ -59,6 +59,8 @@ window.addEventListener('load', function () {
     var cw = canvas.clientWidth;
     var ch = canvas.clientHeight;
 
+    var patchSize = 11;
+
     // set the actual width and height of the canvas,
     // because apparently it's not inherited from the DOM
     canvas.width = cw;
@@ -75,10 +77,11 @@ window.addEventListener('load', function () {
 
     function captureColor() {
       // get a 3x3 area of pixels from the center
-      var x = Math.floor(cw / 2);
-      var y = Math.floor(ch / 2);
+      var offset = Math.floor(patchSize / 2);
+      var x = Math.floor(cw / 2) - offset;
+      var y = Math.floor(ch / 2) - offset;
 
-      var pixels = [].slice.call(context.getImageData(x - 1, y - 1, 3, 3).data);
+      var pixels = [].slice.call(context.getImageData(x, y, patchSize, patchSize).data);
 
       var colors = [];
 
