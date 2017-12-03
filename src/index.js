@@ -102,6 +102,13 @@ window.addEventListener('load', function () {
       });
 
       color.style.backgroundColor = 'rgb(' + average[0] + ',' + average[1] + ',' + average[2] + ')';
+
+      // draw rectangle around the selected area
+      context.beginPath();
+      context.lineWidth = '1';
+      context.strokeStyle = '#e5e5e5';
+      context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
+      context.stroke();
     }
 
     (function paintFrame () {
