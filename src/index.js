@@ -76,13 +76,11 @@ window.addEventListener('load', function () {
     }
 
     function captureColor() {
-      // get a 3x3 area of pixels from the center
       var offset = Math.floor(patchSize / 2);
       var x = Math.floor(cw / 2) - offset;
       var y = Math.floor(ch / 2) - offset;
 
       var pixels = [].slice.call(context.getImageData(x, y, patchSize, patchSize).data);
-
       var colors = [];
 
       while (pixels.length) {
