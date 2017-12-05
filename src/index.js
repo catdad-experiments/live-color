@@ -6,6 +6,7 @@ window.addEventListener('load', function () {
   var video = document.querySelector('#video');
   var canvas = document.querySelector('canvas');
   var color = document.querySelector('#color');
+  var colorMeta = document.querySelector('#color-meta');
 
   function showPrompt(message, type) {
     if (typeof message === 'string') {
@@ -51,6 +52,16 @@ window.addEventListener('load', function () {
 
   if (missingFeatures.length) {
     return onMissingFeatures(missingFeatures.join(', '));
+  }
+
+  // Utils
+  function renderMustache(str, obj) {
+    return Object.keys(obj).reduce(function (memo, key) {
+      var value = obj[key];
+      var regex = new RegExp('\\$\\{' + key + '\\}', 'g');
+
+      return memo.replace(regex, value);
+    }, str);
   }
 
   function continuousPaint (video, canvas) {
@@ -99,6 +110,7 @@ window.addEventListener('load', function () {
         return Math.floor(c / colors.length);
       });
 
+      // set the background of the hero color
       color.style.backgroundColor = 'rgb(' + average[0] + ',' + average[1] + ',' + average[2] + ')';
 
       // draw rectangle around the selected area
@@ -107,6 +119,14 @@ window.addEventListener('load', function () {
       context.strokeStyle = '#e5e5e5';
       context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
       context.stroke();
+
+      // update the meta box
+      colorMeta.innerHTML = '';
+      colorMeta.appendChild(
+        document.createTextNode(
+          renderMustache('R: ${0}, G: ${1}, B: ${2}', average)
+        )
+      );
     }
 
     (function paintFrame () {
