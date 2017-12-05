@@ -113,13 +113,6 @@ window.addEventListener('load', function () {
       // set the background of the hero color
       color.style.backgroundColor = 'rgb(' + average[0] + ',' + average[1] + ',' + average[2] + ')';
 
-      // draw rectangle around the selected area
-      context.beginPath();
-      context.lineWidth = '1';
-      context.strokeStyle = '#e5e5e5';
-      context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
-      context.stroke();
-
       // update the meta box
       colorMeta.innerHTML = '';
       colorMeta.appendChild(
@@ -127,6 +120,13 @@ window.addEventListener('load', function () {
           renderMustache('R: ${0}, G: ${1}, B: ${2}', average)
         )
       );
+
+      // draw rectangle around the selected area
+      context.beginPath();
+      context.lineWidth = '1';
+      context.strokeStyle = '#e5e5e5';
+      context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
+      context.stroke();
     }
 
     (function paintFrame () {
