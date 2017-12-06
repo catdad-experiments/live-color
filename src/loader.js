@@ -32,6 +32,10 @@ window.addEventListener('load', function () {
   }
 
   function onError(err) {
+    /* jshint -W117 */
+    console.error(err);
+    /* jshint +W117 */
+
     showPrompt([
       'An error occured:',
       err.message || err
