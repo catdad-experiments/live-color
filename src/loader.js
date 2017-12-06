@@ -1,4 +1,5 @@
 /* jshint browser: true */
+/* global Promise */
 
 window.addEventListener('load', function () {
   var header = document.querySelector('header');
@@ -39,7 +40,7 @@ window.addEventListener('load', function () {
 
   // detect missing features in the browser
   var missingFeatures = [
-    'navigator.mediaDevices', 'Promise'
+    'navigator.mediaDevices', 'Promise', 'Object.defineProperty'
   ].filter(function (name) {
     return !name.split('.').reduce(function (obj, path) {
       return (obj || {})[path];
@@ -70,10 +71,26 @@ window.addEventListener('load', function () {
     });
   }
 
+  var context = {
+    onError: onError
+  };
+
+  var modules = {};
+
+  window.registerModule = function (name, module) {
+    modules[name] = module.bind(context);
+  };
+
   // load all the modules from the server directly
   Promise.all([
-    loadScript('src/index.js'),
+    loadScript('src/get-video.js'),
+    loadScript('src/show-video.js'),
+    loadScript('src/paint.js'),
   ]).then(function () {
-    console.log('success');
+    return modules['get-video']();
+  }).then(function (source) {
+    return modules['show-video'](source);
+  }).then(function (video) {
+    return modules['paint'](video);
   }).catch(onError);
 });
