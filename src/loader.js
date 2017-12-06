@@ -10,6 +10,9 @@ window.addEventListener('load', function () {
       message = [message];
     }
 
+    // clean the prompt
+    prompt.innerHTML = '';
+
     message.forEach(function (text) {
       var paragraph = document.createElement('p');
       paragraph.appendChild(document.createTextNode(text.toString()));
@@ -21,6 +24,8 @@ window.addEventListener('load', function () {
 
     if (type === 'error') {
       header.classList.add('error');
+    } else {
+      header.classList.remove('error');
     }
   }
 
@@ -112,5 +117,8 @@ window.addEventListener('load', function () {
 
     // start the app
     context.events.emit('start-video');
-  }).catch(onError);
+  }).catch(function (err) {
+    context.events.emit('error', err);
+    onError(err);
+  });
 });
