@@ -90,6 +90,9 @@ window.addEventListener('load', function () {
     loadScript('src/show-video.js'),
     loadScript('src/paint.js'),
   ]).then(function () {
+    // set up a global event emitter
+    context.events = modules['event-emitter']();
+  }).then(function () {
     return modules['get-video']();
   }).then(function (source) {
     return modules['show-video'](source);
