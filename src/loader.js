@@ -1,4 +1,4 @@
-/* jshint browser: true */
+/* jshint browser: true, -W069 */
 /* global Promise */
 
 window.addEventListener('load', function () {
