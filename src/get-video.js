@@ -40,11 +40,9 @@
     });
   }
 
-  function getVideo() {
+  register(NAME, function getVideo() {
     return navigator.mediaDevices
       .enumerateDevices()
       .then(pickDevice);
-  }
-
-  register(NAME, getVideo);
+  });
 }(window.registerModule));
