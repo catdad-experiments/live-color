@@ -40,7 +40,7 @@ window.addEventListener('load', function () {
 
   // detect missing features in the browser
   var missingFeatures = [
-    'navigator.mediaDevices', 'Promise', 'Object.defineProperty'
+    'navigator.mediaDevices', 'Promise'
   ].filter(function (name) {
     return !name.split('.').reduce(function (obj, path) {
       return (obj || {})[path];
@@ -78,6 +78,9 @@ window.addEventListener('load', function () {
   var modules = {};
 
   window.registerModule = function (name, module) {
+    // this module loader is stupid, it can only work with
+    // functions... and just for fun, we'll say that all
+    // the functions return promises
     modules[name] = module.bind(context);
   };
 
