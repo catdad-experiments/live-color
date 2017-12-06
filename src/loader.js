@@ -86,17 +86,27 @@ window.addEventListener('load', function () {
 
   // load all the modules from the server directly
   Promise.all([
+    loadScript('src/event-emitter.js'),
     loadScript('src/get-video.js'),
     loadScript('src/show-video.js'),
     loadScript('src/paint.js'),
   ]).then(function () {
     // set up a global event emitter
     context.events = modules['event-emitter']();
-  }).then(function () {
-    return modules['get-video']();
-  }).then(function (source) {
-    return modules['show-video'](source);
-  }).then(function (video) {
-    return modules['paint'](video);
+
+    var getVideoDestroy = modules['get-video']();
+    var showVideoDestroy = modules['show-video']();
+    var paintDestroy = modules['paint']();
+
+    context.events.on('error', function (err) {
+      onError(err);
+
+      getVideoDestroy();
+      showVideoDestroy();
+      paintDestroy();
+    });
+
+    // start the app
+    context.events.emit('start-video');
   }).catch(onError);
 });

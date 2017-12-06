@@ -7,7 +7,7 @@
   var video = document.querySelector('#video');
   var canvas = document.querySelector('canvas');
 
-  register(NAME, function (source) {
+  function playVideo(source) {
     return new Promise(function (resolve, reject) {
       function onPlaying() {
         video.removeEventListener('playing', onPlaying);
@@ -19,5 +19,21 @@
 
       video.addEventListener('playing', onPlaying);
     });
+  }
+
+  register(NAME, function (source) {
+    var context = this;
+
+    context.events.on('video-ready', function (source) {
+      playVideo(source)
+      .then(function (videoElem) {
+        context.events.emit('video-playing', videoElem);
+      })
+      .catch(function (err) {
+        context.events.emit('error', err);
+      });
+    });
+
+    return function destroy() {};
   });
 }(window.registerModule));
