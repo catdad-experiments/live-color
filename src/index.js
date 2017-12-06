@@ -1,58 +1,10 @@
 /* jshint browser: true */
 
-window.addEventListener('load', function () {
-  var header = document.querySelector('header');
-  var prompt = document.querySelector('#prompt');
+(function (window, document) {
   var video = document.querySelector('#video');
   var canvas = document.querySelector('canvas');
   var color = document.querySelector('#color');
   var colorMeta = document.querySelector('#color-meta');
-
-  function showPrompt(message, type) {
-    if (typeof message === 'string') {
-      message = [message];
-    }
-
-    message.forEach(function (text) {
-      var paragraph = document.createElement('p');
-      paragraph.appendChild(document.createTextNode(text.toString()));
-
-      prompt.appendChild(paragraph);
-    });
-
-    prompt.classList.remove('hide');
-
-    if (type === 'error') {
-      header.classList.add('error');
-    }
-  }
-
-  function onMissingFeatures(missing) {
-    showPrompt([
-      'It seems your browser is not supported. The following features are missing:',
-      missing
-    ], 'error');
-  }
-
-  function onError(err) {
-    showPrompt([
-      'An error occured:',
-      err.message || err
-    ], 'error');
-  }
-
-  // detect missing features in the browser
-  var missingFeatures = [
-    'navigator.mediaDevices'
-  ].filter(function (name) {
-    return !name.split('.').reduce(function (obj, path) {
-      return (obj || {})[path];
-    }, window);
-  });
-
-  if (missingFeatures.length) {
-    return onMissingFeatures(missingFeatures.join(', '));
-  }
 
   // Utils
   function renderMustache(str, obj) {
@@ -187,4 +139,4 @@ window.addEventListener('load', function () {
   .then(handleDevices)
   .then(handleStream)
   .catch(onError);
-});
+}(window, document));
