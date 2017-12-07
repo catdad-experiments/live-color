@@ -10,6 +10,9 @@ window.addEventListener('load', function () {
       message = [message];
     }
 
+    // clean the prompt
+    prompt.innerHTML = '';
+
     message.forEach(function (text) {
       var paragraph = document.createElement('p');
       paragraph.appendChild(document.createTextNode(text.toString()));
@@ -21,6 +24,8 @@ window.addEventListener('load', function () {
 
     if (type === 'error') {
       header.classList.add('error');
+    } else {
+      header.classList.remove('error');
     }
   }
 
@@ -32,6 +37,10 @@ window.addEventListener('load', function () {
   }
 
   function onError(err) {
+    /* jshint -W117 */
+    console.error(err);
+    /* jshint +W117 */
+
     showPrompt([
       'An error occured:',
       err.message || err
@@ -86,14 +95,30 @@ window.addEventListener('load', function () {
 
   // load all the modules from the server directly
   Promise.all([
+    loadScript('src/event-emitter.js'),
     loadScript('src/get-video.js'),
     loadScript('src/show-video.js'),
     loadScript('src/paint.js'),
   ]).then(function () {
-    return modules['get-video']();
-  }).then(function (source) {
-    return modules['show-video'](source);
-  }).then(function (video) {
-    return modules['paint'](video);
-  }).catch(onError);
+    // set up a global event emitter
+    context.events = modules['event-emitter']();
+
+    var getVideoDestroy = modules['get-video']();
+    var showVideoDestroy = modules['show-video']();
+    var paintDestroy = modules['paint']();
+
+    context.events.on('error', function (err) {
+      onError(err);
+
+      getVideoDestroy();
+      showVideoDestroy();
+      paintDestroy();
+    });
+
+    // start the app
+    context.events.emit('start-video');
+  }).catch(function (err) {
+    context.events.emit('error', err);
+    onError(err);
+  });
 });

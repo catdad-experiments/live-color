@@ -18,7 +18,7 @@
     }, str);
   }
 
-  register(NAME, function (video) {
+  function paintVideo(video) {
     return new Promise(function (resolve, reject) {
 
       var vw = video.videoWidth;
@@ -94,6 +94,14 @@
       }());
 
       return resolve();
+    });
+  }
+
+  register(NAME, function () {
+    var context = this;
+
+    context.events.on('video-playing', function (video) {
+      paintVideo(video);
     });
   });
 }(window.registerModule));

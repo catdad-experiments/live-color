@@ -40,9 +40,25 @@
     });
   }
 
-  register(NAME, function getVideo() {
+  function getVideo() {
     return navigator.mediaDevices
       .enumerateDevices()
       .then(pickDevice);
+  }
+
+  register(NAME, function () {
+    var context = this;
+
+    context.events.on('start-video', function () {
+      getVideo()
+      .then(function (source) {
+        context.events.emit('video-ready', source);
+      })
+      .catch(function (err) {
+        context.events.emit('error', err);
+      });
+    });
+
+    return function destroy() {};
   });
 }(window.registerModule));
