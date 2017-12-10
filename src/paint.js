@@ -18,6 +18,16 @@
     }, str);
   }
 
+  function init() {
+    canvas.classList.remove('hide');
+    color.classList.remove('hide');
+  }
+
+  function destroy() {
+    canvas.classList.add('hide');
+    color.classList.add('hide');
+  }
+
   function paintVideo(video) {
     return new Promise(function (resolve, reject) {
 
@@ -101,6 +111,7 @@
     var context = this;
 
     context.events.on('video-playing', function (video) {
+      init();
       paintVideo(video);
     });
   });

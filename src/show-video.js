@@ -5,7 +5,6 @@
   var NAME = 'show-video';
 
   var video = document.querySelector('#video');
-  var canvas = document.querySelector('canvas');
 
   function playVideo(source) {
     return new Promise(function (resolve, reject) {
