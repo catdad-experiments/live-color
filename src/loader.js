@@ -97,7 +97,6 @@ window.addEventListener('load', function () {
   Promise.all([
     loadScript('src/event-emitter.js'),
     loadScript('src/get-video.js'),
-    loadScript('src/show-video.js'),
     loadScript('src/paint.js'),
     loadScript('src/swatch.js'),
   ]).then(function () {
@@ -105,7 +104,6 @@ window.addEventListener('load', function () {
     context.events = modules['event-emitter']();
 
     var getVideoDestroy = modules['get-video']();
-    var showVideoDestroy = modules['show-video']();
     var paintDestroy = modules['paint']();
     var swatchDestroy = modules['swatch']();
 
@@ -113,7 +111,6 @@ window.addEventListener('load', function () {
       onError(err);
 
       getVideoDestroy();
-      showVideoDestroy();
       paintDestroy();
     });
 
