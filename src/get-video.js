@@ -1,7 +1,10 @@
 /* jshint browser: true */
+/* global Promise */
 
 (function (register) {
   var NAME = 'get-video';
+
+  var video = document.querySelector('#video');
 
   function pickDevice(devices) {
     var sourceId = null;
@@ -46,13 +49,30 @@
       .then(pickDevice);
   }
 
+  function playVideo(source) {
+    return new Promise(function (resolve, reject) {
+      function onPlaying() {
+        video.removeEventListener('playing', onPlaying);
+
+        resolve(video);
+      }
+
+      video.srcObject = source;
+
+      video.addEventListener('playing', onPlaying);
+    });
+  }
+
   register(NAME, function () {
     var context = this;
 
     context.events.on('start-video', function () {
       getVideo()
       .then(function (source) {
-        context.events.emit('video-ready', source);
+        return playVideo(source);
+      })
+      .then(function (video) {
+        context.events.emit('video-playing', video);
       })
       .catch(function (err) {
         context.events.emit('error', err);
