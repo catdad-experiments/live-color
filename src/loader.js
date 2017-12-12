@@ -112,6 +112,7 @@ window.addEventListener('load', function () {
 
       getVideoDestroy();
       paintDestroy();
+      swatchDestroy();
     });
 
     // start the app
