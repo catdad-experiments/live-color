@@ -100,6 +100,8 @@
     context.events.on('stop-video', onStopVideo);
 
     return function destroy() {
+      onStopVideo();
+
       context.events.off('start-video', onStartVideo);
       context.events.off('stop-video', onStopVideo);
     };
