@@ -48,7 +48,7 @@
     });
 
     color.addEventListener('click', function () {
-      console.log('click');
+      context.events.emit('stop-video');
     });
 
     return function destroy() {};
