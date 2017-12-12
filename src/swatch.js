@@ -29,6 +29,16 @@
     var context = this;
     var initialized = false;
 
+    var videoIsPlaying = false;
+
+    context.events.on('video-playing', function () {
+      videoIsPlaying = true;
+    });
+
+    context.events.on('stop-video', function () {
+      videoIsPlaying = false;
+    });
+
     context.events.on('color-change', function (ev) {
       if (!initialized) {
         init();
@@ -48,7 +58,11 @@
     });
 
     color.addEventListener('click', function () {
-      context.events.emit('stop-video');
+      if (videoIsPlaying) {
+        context.events.emit('stop-video');
+      } else {
+        context.events.emit('start-video');
+      }
     });
 
     return function destroy() {};
