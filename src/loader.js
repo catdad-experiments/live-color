@@ -99,6 +99,7 @@ window.addEventListener('load', function () {
     loadScript('src/get-video.js'),
     loadScript('src/show-video.js'),
     loadScript('src/paint.js'),
+    loadScript('src/swatch.js'),
   ]).then(function () {
     // set up a global event emitter
     context.events = modules['event-emitter']();
@@ -106,6 +107,7 @@ window.addEventListener('load', function () {
     var getVideoDestroy = modules['get-video']();
     var showVideoDestroy = modules['show-video']();
     var paintDestroy = modules['paint']();
+    var swatchDestroy = modules['swatch']();
 
     context.events.on('error', function (err) {
       onError(err);

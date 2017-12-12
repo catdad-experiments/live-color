@@ -5,30 +5,18 @@
   var NAME = 'paint';
 
   var canvas = document.querySelector('canvas');
-  var color = document.querySelector('#color');
-  var colorMeta = document.querySelector('#color-meta');
-
-  // Utils
-  function renderMustache(str, obj) {
-    return Object.keys(obj).reduce(function (memo, key) {
-      var value = obj[key];
-      var regex = new RegExp('\\$\\{' + key + '\\}', 'g');
-
-      return memo.replace(regex, value);
-    }, str);
-  }
 
   function init() {
     canvas.classList.remove('hide');
-    color.classList.remove('hide');
   }
 
   function destroy() {
     canvas.classList.add('hide');
-    color.classList.add('hide');
   }
 
-  function paintVideo(video) {
+  function paintVideo(video, events) {
+    var painting = true;
+
     return new Promise(function (resolve, reject) {
 
       var vw = video.videoWidth;
@@ -76,28 +64,25 @@
           return Math.floor(c / colors.length);
         });
 
-        // set the background of the hero color
-        color.style.backgroundColor = 'rgb(' + average[0] + ',' + average[1] + ',' + average[2] + ')';
-
-        // update the meta box
-        colorMeta.innerHTML = '';
-        colorMeta.appendChild(
-          document.createTextNode(
-            renderMustache('R: ${0}, G: ${1}, B: ${2}', average)
-          )
-        );
-
         // draw rectangle around the selected area
         context.beginPath();
         context.lineWidth = '1';
         context.strokeStyle = '#e5e5e5';
         context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
         context.stroke();
+
+        return {
+          r: average[0],
+          g: average[1],
+          b: average[2]
+        };
       }
 
       (function paintFrame () {
         drawContext();
-        captureColor();
+        var color = captureColor();
+
+        events.emit('color-change', { color: color });
 
         // keep painting recursively on each frame
         requestAnimationFrame(paintFrame);
@@ -112,7 +97,9 @@
 
     context.events.on('video-playing', function (video) {
       init();
-      paintVideo(video);
+      paintVideo(video, context.events);
     });
+
+    return destroy;
   });
 }(window.registerModule));
