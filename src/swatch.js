@@ -31,15 +31,15 @@
 
     var videoIsPlaying = false;
 
-    context.events.on('video-playing', function () {
+    function onVideoPlaying() {
       videoIsPlaying = true;
-    });
+    }
 
-    context.events.on('stop-video', function () {
+    function onVideoStopped() {
       videoIsPlaying = false;
-    });
+    }
 
-    context.events.on('color-change', function (ev) {
+    function onColorChange(ev) {
       if (!initialized) {
         init();
         initialized = true;
@@ -55,16 +55,28 @@
           renderMustache('R: ${r}, G: ${g}, B: ${b}', ev.color)
         )
       );
-    });
+    }
 
-    color.addEventListener('click', function () {
+    function onColorClick() {
       if (videoIsPlaying) {
         context.events.emit('stop-video');
       } else {
         context.events.emit('start-video');
       }
-    });
+    }
 
-    return function destroy() {};
+    context.events.on('video-playing', onVideoPlaying);
+    context.events.on('stop-video', onVideoStopped);
+    context.events.on('color-change', onColorChange);
+
+    color.addEventListener('click', onColorClick);
+
+    return function destroy() {
+      context.events.off('video-playing', onVideoPlaying);
+      context.events.off('stop-video', onVideoStopped);
+      context.events.off('color-change', onColorChange);
+
+      color.removeEventListener('click', onColorClick);
+    };
   });
 }(window.registerModule));
