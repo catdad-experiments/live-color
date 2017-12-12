@@ -77,6 +77,9 @@
       context.events.off('color-change', onColorChange);
 
       color.removeEventListener('click', onColorClick);
+
+      initialized = false;
+      destroy();
     };
   });
 }(window.registerModule));
