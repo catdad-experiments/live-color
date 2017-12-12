@@ -65,10 +65,12 @@
 
   register(NAME, function () {
     var context = this;
+    var sourceMedia;
 
-    context.events.on('start-video', function () {
+    function onStartVideo() {
       getVideo()
       .then(function (source) {
+        sourceMedia = source;
         return playVideo(source);
       })
       .then(function (video) {
@@ -77,8 +79,29 @@
       .catch(function (err) {
         context.events.emit('error', err);
       });
-    });
+    }
 
-    return function destroy() {};
+    function onStopVideo() {
+      if (video && video.paused === false) {
+        video.pause();
+        video.srcObject = null;
+      }
+
+      if (sourceMedia) {
+        sourceMedia.getTracks().forEach(function (track) {
+          track.stop();
+        });
+
+        sourceMedia = null;
+      }
+    }
+
+    context.events.on('start-video', onStartVideo);
+    context.events.on('stop-video', onStopVideo);
+
+    return function destroy() {
+      context.events.off('start-video', onStartVideo);
+      context.events.off('stop-video', onStopVideo);
+    };
   });
 }(window.registerModule));
