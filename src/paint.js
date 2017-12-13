@@ -78,7 +78,20 @@
         };
       }
 
+      function onStopVideo() {
+        events.off('stop-video', onStopVideo);
+
+        painting = false;
+        destroy();
+      }
+
+      events.on('stop-video', onStopVideo);
+
       (function paintFrame () {
+        if (!painting) {
+          return;
+        }
+
         drawContext();
         var color = captureColor();
 
