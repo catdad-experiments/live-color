@@ -24,8 +24,6 @@
       var cw = canvas.clientWidth;
       var ch = canvas.clientHeight;
 
-      var patchSize = 11;
-
       // set the actual width and height of the canvas,
       // because apparently it's not inherited from the DOM
       canvas.width = cw;
@@ -33,6 +31,11 @@
 
       var vidX = (vw - cw) / 2;
       var vidY = (vh - ch) / 2;
+
+      // define patch size and location
+      var patchSize = 11;
+      var patchX = Math.floor(cw / 2);
+      var patchY = Math.floor(ch / 2);
 
       var context = canvas.getContext('2d');
 
@@ -42,8 +45,8 @@
 
       function captureColor() {
         var offset = Math.floor(patchSize / 2);
-        var x = Math.floor(cw / 2) - offset;
-        var y = Math.floor(ch / 2) - offset;
+        var x = patchX - offset;
+        var y = patchY - offset;
 
         var pixels = [].slice.call(context.getImageData(x, y, patchSize, patchSize).data);
         var colors = [];
@@ -78,14 +81,23 @@
         };
       }
 
+      function onCanvasClick(ev) {
+        // update the patch center, if the events support it
+        patchX = ev.offsetX || ev.layerX || patchX;
+        patchY = ev.offsetY || ev.layerY || patchY;
+      }
+
       function onStopVideo() {
         events.off('stop-video', onStopVideo);
+        canvas.removeEventListener('click', onCanvasClick);
 
         painting = false;
         destroy();
       }
 
       events.on('stop-video', onStopVideo);
+
+      canvas.addEventListener('click', onCanvasClick);
 
       (function paintFrame () {
         if (!painting) {
