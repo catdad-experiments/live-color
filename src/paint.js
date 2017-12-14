@@ -114,7 +114,6 @@
         canvas.removeEventListener('click', onCanvasClick);
 
         painting = false;
-        destroy();
       }
 
       events.on('stop-video', onStopVideo);
