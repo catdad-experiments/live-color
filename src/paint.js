@@ -43,12 +43,34 @@
         context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
       }
 
-      function captureColor() {
+      function getPatch() {
         var offset = Math.floor(patchSize / 2);
         var x = patchX - offset;
         var y = patchY - offset;
 
-        var pixels = [].slice.call(context.getImageData(x, y, patchSize, patchSize).data);
+        if (x < 1) {
+          x = 1;
+        }
+
+        if (y < 1) {
+          y = 1;
+        }
+
+        if (x + patchSize > cw - 1) {
+          x = cw - 1 - patchSize;
+        }
+
+        if (y + patchSize > ch - 1) {
+          y = ch - 1 - patchSize;
+        }
+
+        return { x: x, y: y };
+      }
+
+      function captureColor() {
+        var patch = getPatch();
+
+        var pixels = [].slice.call(context.getImageData(patch.x, patch.y, patchSize, patchSize).data);
         var colors = [];
 
         while (pixels.length) {
@@ -71,7 +93,7 @@
         context.beginPath();
         context.lineWidth = '1';
         context.strokeStyle = '#e5e5e5';
-        context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
+        context.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
         context.stroke();
 
         return {
