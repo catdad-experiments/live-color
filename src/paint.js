@@ -39,10 +39,6 @@
 
       var context = canvas.getContext('2d');
 
-      function drawContext() {
-        context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
-      }
-
       function getPatch() {
         var offset = Math.floor(patchSize / 2);
         var x = patchX - offset;
@@ -103,6 +99,15 @@
         };
       }
 
+      function drawContext() {
+        context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
+      }
+
+      function drawColor() {
+        var color = captureColor();
+        events.emit('color-change', { color: color });
+      }
+
       function onCanvasClick(ev) {
         // update the patch center, if the events support it
         patchX = ev.offsetX || ev.layerX || patchX;
@@ -126,9 +131,7 @@
         }
 
         drawContext();
-        var color = captureColor();
-
-        events.emit('color-change', { color: color });
+        drawColor();
 
         // keep painting recursively on each frame
         requestAnimationFrame(paintFrame);
