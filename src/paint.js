@@ -24,8 +24,6 @@
       var cw = canvas.clientWidth;
       var ch = canvas.clientHeight;
 
-      var patchSize = 11;
-
       // set the actual width and height of the canvas,
       // because apparently it's not inherited from the DOM
       canvas.width = cw;
@@ -34,18 +32,41 @@
       var vidX = (vw - cw) / 2;
       var vidY = (vh - ch) / 2;
 
+      // define patch size and location
+      var patchSize = 11;
+      var patchX = Math.floor(cw / 2);
+      var patchY = Math.floor(ch / 2);
+
       var context = canvas.getContext('2d');
 
-      function drawContext() {
-        context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
+      function getPatch() {
+        var offset = Math.floor(patchSize / 2);
+        var x = patchX - offset;
+        var y = patchY - offset;
+
+        if (x < 1) {
+          x = 1;
+        }
+
+        if (y < 1) {
+          y = 1;
+        }
+
+        if (x + patchSize > cw - 1) {
+          x = cw - 1 - patchSize;
+        }
+
+        if (y + patchSize > ch - 1) {
+          y = ch - 1 - patchSize;
+        }
+
+        return { x: x, y: y };
       }
 
       function captureColor() {
-        var offset = Math.floor(patchSize / 2);
-        var x = Math.floor(cw / 2) - offset;
-        var y = Math.floor(ch / 2) - offset;
+        var patch = getPatch();
 
-        var pixels = [].slice.call(context.getImageData(x, y, patchSize, patchSize).data);
+        var pixels = [].slice.call(context.getImageData(patch.x, patch.y, patchSize, patchSize).data);
         var colors = [];
 
         while (pixels.length) {
@@ -68,7 +89,7 @@
         context.beginPath();
         context.lineWidth = '1';
         context.strokeStyle = '#e5e5e5';
-        context.rect(x - 1, y - 1, patchSize + 2, patchSize + 2);
+        context.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
         context.stroke();
 
         return {
@@ -78,14 +99,31 @@
         };
       }
 
+      function drawContext() {
+        context.drawImage(video, vidX, vidY, cw, ch, 0, 0, cw, ch);
+      }
+
+      function drawColor() {
+        var color = captureColor();
+        events.emit('color-change', { color: color });
+      }
+
+      function onCanvasClick(ev) {
+        // update the patch center, if the events support it
+        patchX = ev.offsetX || ev.layerX || patchX;
+        patchY = ev.offsetY || ev.layerY || patchY;
+      }
+
       function onStopVideo() {
         events.off('stop-video', onStopVideo);
+        canvas.removeEventListener('click', onCanvasClick);
 
         painting = false;
-        destroy();
       }
 
       events.on('stop-video', onStopVideo);
+
+      canvas.addEventListener('click', onCanvasClick);
 
       (function paintFrame () {
         if (!painting) {
@@ -93,9 +131,7 @@
         }
 
         drawContext();
-        var color = captureColor();
-
-        events.emit('color-change', { color: color });
+        drawColor();
 
         // keep painting recursively on each frame
         requestAnimationFrame(paintFrame);
