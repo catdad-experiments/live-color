@@ -5,8 +5,12 @@
   var NAME = 'paint';
   var EVENTS;
 
-  var canvas = document.querySelector('canvas');
+  var container = document.querySelector('.canvas-container');
+  var canvas = document.querySelector('canvas.video');
+  var overlay = document.querySelector('canvas.overlay');
   var context = canvas.getContext('2d');
+  var overlayContext = overlay.getContext('2d');
+
   var painting = false;
   var lastFrame, canvasWidth, canvasHeight;
 
@@ -42,8 +46,7 @@
     return { x: x, y: y };
   }
 
-  function captureColor() {
-    var patch = getPatch();
+  function captureColor(patch) {
 
     var pixels = [].slice.call(context.getImageData(patch.x, patch.y, patchSize, patchSize).data);
     var colors = [];
@@ -64,13 +67,6 @@
       return Math.floor(c / colors.length);
     });
 
-    // draw rectangle around the selected area
-    context.beginPath();
-    context.lineWidth = '1';
-    context.strokeStyle = '#e5e5e5';
-    context.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
-    context.stroke();
-
     return {
       r: average[0],
       g: average[1],
@@ -78,8 +74,22 @@
     };
   }
 
+  function outlinePatch(patch) {
+    // draw rectangle around the selected area
+    overlayContext.beginPath();
+    overlayContext.clearRect(0, 0, canvasWidth, canvasHeight);
+    overlayContext.lineWidth = '1';
+    overlayContext.strokeStyle = 'red';
+    overlayContext.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
+    overlayContext.stroke();
+  }
+
   function drawColor() {
-    var color = captureColor();
+    var patch = getPatch();
+
+    var color = captureColor(patch);
+    outlinePatch(patch);
+
     EVENTS.emit('color-change', { color: color });
   }
 
@@ -88,32 +98,31 @@
     patchX = ev.offsetX || ev.layerX || patchX;
     patchY = ev.offsetY || ev.layerY || patchY;
 
-    if (!painting && lastFrame) {
-      drawImageData(lastFrame);
+    if (!painting) {
       drawColor();
     }
   }
 
   function init() {
-    canvas.classList.remove('hide');
+    container.classList.remove('hide');
 
     canvasWidth = canvas.clientWidth;
     canvasHeight = canvas.clientHeight;
 
     // set the actual width and height of the canvas,
     // because apparently it's not inherited from the DOM
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    canvas.width = overlay.width = canvasWidth;
+    canvas.height = overlay.height = canvasHeight;
 
     patchX = Math.floor(canvasWidth / 2);
     patchY = Math.floor(canvasHeight / 2);
 
-    canvas.addEventListener('click', onCanvasClick);
+    overlay.addEventListener('click', onCanvasClick);
   }
 
   function destroy() {
-    canvas.classList.add('hide');
-    canvas.removeEventListener('click', onCanvasClick);
+    container.classList.add('hide');
+    overlay.removeEventListener('click', onCanvasClick);
 
     lastFrame = null;
     painting = false;
@@ -134,10 +143,6 @@
       }
 
       function onStopVideo() {
-        // draw one last frame and capture it
-        drawContext();
-        lastFrame = context.getImageData(0, 0, canvasWidth, canvasHeight);
-
         EVENTS.off('stop-video', onStopVideo);
         painting = false;
       }
