@@ -79,7 +79,7 @@
     overlayContext.beginPath();
     overlayContext.clearRect(0, 0, canvasWidth, canvasHeight);
     overlayContext.lineWidth = '1';
-    overlayContext.strokeStyle = 'red';
+    overlayContext.strokeStyle = '#e5e5e5';
     overlayContext.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
     overlayContext.stroke();
   }
