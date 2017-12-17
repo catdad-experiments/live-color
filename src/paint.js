@@ -120,7 +120,6 @@
   }
 
   function paintVideo(video) {
-
     return new Promise(function (resolve, reject) {
       painting = true;
 
@@ -140,7 +139,6 @@
         lastFrame = context.getImageData(0, 0, canvasWidth, canvasHeight);
 
         EVENTS.off('stop-video', onStopVideo);
-
         painting = false;
       }
 
@@ -166,8 +164,9 @@
     var context = this;
     EVENTS = context.events;
 
+    init();
+
     context.events.on('video-playing', function (video) {
-      init();
       paintVideo(video);
     });
 
