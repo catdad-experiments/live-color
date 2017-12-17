@@ -74,12 +74,25 @@
     };
   }
 
-  function outlinePatch(patch, color) {
-    var drawColor = [
+  function getOutlineColor(color) {
+    function between(num, low, high) {
+      return num > low && num < high;
+    }
+
+    var isGrayish =
+        between(color.r, 70, 180) &&
+        between(color.g, 70, 180) &&
+        between(color.b, 70, 180);
+
+    return isGrayish ? '244,40,40' : [
       255 - color.r,
       255 - color.g,
       255 - color.b
     ].join(',');
+  }
+
+  function outlinePatch(patch, color) {
+    var drawColor = getOutlineColor(color);
 
     // draw rectangle around the selected area
     overlayContext.beginPath();
