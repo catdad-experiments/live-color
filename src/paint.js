@@ -74,12 +74,22 @@
     };
   }
 
-  function outlinePatch(patch) {
+  function getOutlineColor(color) {
+    var isRedish = color.r > 100 &&
+        color.g < 60 &&
+        color.b < 60;
+
+    return isRedish ? '244,244,244' : '244,40,40';
+  }
+
+  function outlinePatch(patch, color) {
+    var drawColor = getOutlineColor(color);
+
     // draw rectangle around the selected area
     overlayContext.beginPath();
     overlayContext.clearRect(0, 0, canvasWidth, canvasHeight);
     overlayContext.lineWidth = '1';
-    overlayContext.strokeStyle = '#e5e5e5';
+    overlayContext.strokeStyle = 'rgb(' + drawColor + ')';
     overlayContext.rect(patch.x - 1, patch.y - 1, patchSize + 2, patchSize + 2);
     overlayContext.stroke();
   }
@@ -88,7 +98,7 @@
     var patch = getPatch();
 
     var color = captureColor(patch);
-    outlinePatch(patch);
+    outlinePatch(patch, color);
 
     EVENTS.emit('color-change', { color: color });
   }
