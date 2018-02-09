@@ -61,6 +61,11 @@ window.addEventListener('load', function () {
     return onMissingFeatures(missingFeatures.join(', '));
   }
 
+  // ------------------------------------------------
+  // we've validated modules... we can use fancy
+  // things now
+  // ------------------------------------------------
+
   // super simple module loader, because I don't want to
   // deal with build for this demo
   function loadScript(name) {
