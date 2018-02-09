@@ -3,6 +3,7 @@
 
 window.addEventListener('load', function () {
   var header = document.querySelector('header');
+  var headerContainer = header.querySelector('.header-container');
   var prompt = document.querySelector('#prompt');
 
   function showPrompt(message, type) {
@@ -23,9 +24,9 @@ window.addEventListener('load', function () {
     prompt.classList.remove('hide');
 
     if (type === 'error') {
-      header.classList.add('error');
+      headerContainer.classList.add('error');
     } else {
-      header.classList.remove('error');
+      headerContainer.classList.remove('error');
     }
   }
 

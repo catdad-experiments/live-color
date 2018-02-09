@@ -18,12 +18,19 @@ header {
   position: absolute;
   top: 0;
   width: 100%;
-  height: 2em;
+  height: 0;
+  overflow: visible;
 }
 
-header.error {
-  background: #d64c4f;
+.header-container {
+  position: relative;
+  width: 100%;
+  padding: 0.2em;
+}
+
+.header-container.error {
   font-weight: bold;
+  background: #d64c4f;
 }
 
 footer {
@@ -46,8 +53,6 @@ footer span {
   position: relative;
   min-height: 100%;
 
-  /* clear the header */
-  padding-top: 2em;
   /* clear the footer */
   margin-bottom: -2em;
 
