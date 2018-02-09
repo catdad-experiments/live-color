@@ -28,8 +28,10 @@
   </svg>
 
   <header>
-    <div class="limit">
-      <div id="prompt" class="prompt hide"></div>
+    <div class="header-container">
+      <div class="limit">
+        <div id="prompt" class="prompt hide"></div>
+      </div>
     </div>
   </header>
 
@@ -37,14 +39,17 @@
     <!--video is in the DOM, but will always be hidden-->
     <video id="video" class="center" autoplay></video>
 
-    <div class="canvas-container hide">
-      <canvas class="video"></canvas>
-      <canvas class="overlay"></canvas>
+    <div class="contents">
+      <div class="canvas-container hide">
+        <canvas class="video"></canvas>
+        <canvas class="overlay"></canvas>
+      </div>
+
+      <div id="color" class="hero-color hide">
+        <div id="color-meta" class="hero-meta"></div>
+      </div>
     </div>
 
-    <div id="color" class="hero-color hide">
-      <div id="color-meta" class="hero-meta"></div>
-    </div>
   </div>
 
   <footer>
