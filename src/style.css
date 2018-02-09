@@ -104,8 +104,6 @@ video {
   width: 400px;
   height: 400px;
   margin: auto;
-
-  border-radius: 2px 2px 2px 2px;
 }
 
 canvas {
@@ -118,6 +116,10 @@ canvas {
   will-change: transform;
 }
 
+canvas.video, .hero-color {
+  border-radius: 2px 2px 2px 2px;
+}
+
 .hero-color {
   position: relative;
 
@@ -128,8 +130,6 @@ canvas {
   box-shadow: inset 0 0 0 6px #e5e5e5;
 
   will-change: background-color;
-
-  border-radius: 2px 2px 2px 2px;
 }
 
 .hero-meta {
@@ -142,7 +142,7 @@ canvas {
   color: #24292e;
   background: #e5e5e5;
 
-  border-radius: 2px 2px 0 0;
+  border-radius: 20px 20px 0 0;
 }
 
 span.icon {
